@@ -1,0 +1,10 @@
+﻿  test.cpp
+E:\VS2022\Poject\String\String\string.h(29,1): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+E:\VS2022\Poject\String\String\string.h(138,1): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+E:\VS2022\Poject\String\String\string.h(153,1): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+E:\VS2022\Poject\String\String\string.h(158,1): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+E:\VS2022\Poject\String\String\string.h(196,13): warning C4267: “+=”: 从“size_t”转换到“int”，可能丢失数据
+E:\VS2022\Poject\String\String\string.h(218,1): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+E:\VS2022\Poject\String\String\string.h(223,14): warning C4267: “-=”: 从“size_t”转换到“int”，可能丢失数据
+E:\VS2022\Poject\String\String\string.h(371,8): warning C4101: “buff”: 未引用的局部变量
+  String.vcxproj -> E:\VS2022\Poject\String\x64\Debug\String.exe
