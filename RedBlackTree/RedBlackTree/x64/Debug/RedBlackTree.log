@@ -1,0 +1,24 @@
+﻿  test.cpp
+E:\VS2022\Poject\RedBlackTree\RedBlackTree\test.cpp(22,12): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.31.31103\include\utility(247,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty2”，可能丢失数据
+          with
+          [
+              _Ty=unsigned __int64
+          ]
+          and
+          [
+              _Ty2=int
+          ]
+E:\VS2022\Poject\RedBlackTree\RedBlackTree\test.cpp(28): message : 查看对正在编译的函数 模板 实例化“std::pair<K,V>::pair<int,unsigned __int64,0>(std::pair<int,unsigned __int64> &&) noexcept”的引用
+          with
+          [
+              K=int,
+              V=int
+          ]
+E:\VS2022\Poject\RedBlackTree\RedBlackTree\test.cpp(28): message : 查看对正在编译的函数 模板 实例化“std::pair<K,V>::pair<int,unsigned __int64,0>(std::pair<int,unsigned __int64> &&) noexcept”的引用
+          with
+          [
+              K=int,
+              V=int
+          ]
+  RedBlackTree.vcxproj -> E:\VS2022\Poject\RedBlackTree\x64\Debug\RedBlackTree.exe
