@@ -1,28 +1,28 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 
 #include <stdio.h>  
-#include <WinSock.h>  //Ò»¶¨Òª°üº¬Õâ¸ö 
-#include "mysql.h"    //ÒıÈëmysqlÍ·ÎÄ¼ş(Ò»ÖÖ·½Ê½ÊÇÔÚvc++Ä¿Â¼ÀïÃæÉèÖÃ£¬Ò»ÖÖÊÇÎÄ¼ş¼Ğ¿½µ½¹¤³ÌÄ¿Â¼£¬È»ºóÕâÑù°üº¬)  
+#include <WinSock.h>  //ä¸€å®šè¦åŒ…å«è¿™ä¸ª 
+#include "mysql.h"    //å¼•å…¥mysqlå¤´æ–‡ä»¶(ä¸€ç§æ–¹å¼æ˜¯åœ¨vc++ç›®å½•é‡Œé¢è®¾ç½®ï¼Œä¸€ç§æ˜¯æ–‡ä»¶å¤¹æ‹·åˆ°å·¥ç¨‹ç›®å½•ï¼Œç„¶åè¿™æ ·åŒ…å«)  
 #include <Windows.h>  
 
-//°üº¬¸½¼ÓÒÀÀµÏî£¬Ò²¿ÉÒÔÔÚ¹¤³Ì--ÊôĞÔÀïÃæÉèÖÃ  
+//åŒ…å«é™„åŠ ä¾èµ–é¡¹ï¼Œä¹Ÿå¯ä»¥åœ¨å·¥ç¨‹--å±æ€§é‡Œé¢è®¾ç½®  
 #pragma comment(lib,"wsock32.lib") 
 #pragma comment(lib,"libmysql.lib")
 
-MYSQL mysql; //mysqlÁ¬½Ó
-MYSQL_FIELD* fd;  //×Ö¶ÎÁĞÊı×é
-char field[32][32];  //´æ×Ö¶ÎÃû¶şÎ¬Êı×é
-MYSQL_RES* res; //Õâ¸ö½á¹¹´ú±í·µ»ØĞĞµÄÒ»¸ö²éÑ¯½á¹û¼¯
-MYSQL_ROW column; //Ò»¸öĞĞÊı¾İµÄÀàĞÍ°²È«(type-safe)µÄ±íÊ¾£¬±íÊ¾Êı¾İĞĞµÄÁĞ
-char query[150]; //²éÑ¯Óï¾ä
+MYSQL mysql; //mysqlè¿æ¥
+MYSQL_FIELD* fd;  //å­—æ®µåˆ—æ•°ç»„
+char field[32][32];  //å­˜å­—æ®µåäºŒç»´æ•°ç»„
+MYSQL_RES* res; //è¿™ä¸ªç»“æ„ä»£è¡¨è¿”å›è¡Œçš„ä¸€ä¸ªæŸ¥è¯¢ç»“æœé›†
+MYSQL_ROW column; //ä¸€ä¸ªè¡Œæ•°æ®çš„ç±»å‹å®‰å…¨(type-safe)çš„è¡¨ç¤ºï¼Œè¡¨ç¤ºæ•°æ®è¡Œçš„åˆ—
+char query[150]; //æŸ¥è¯¢è¯­å¥
 
-bool ConnectDatabase();    	//º¯ÊıÉùÃ÷  
+bool ConnectDatabase();    	//å‡½æ•°å£°æ˜  
 void FreeConnect();
-bool QueryDatabase1();  	//²éÑ¯1  
-bool QueryDatabase2();  	//²éÑ¯2  
-bool InsertData();		//Ôö
-bool ModifyData();		//¸Ä
-bool DeleteData();		//É¾
+bool QueryDatabase1();  	//æŸ¥è¯¢1  
+bool QueryDatabase2();  	//æŸ¥è¯¢2  
+bool InsertData();		//å¢
+bool ModifyData();		//æ”¹
+bool DeleteData();		//åˆ 
 int main(int argc, char** argv)
 {
 	ConnectDatabase();
@@ -36,19 +36,19 @@ int main(int argc, char** argv)
 	FreeConnect();
 	return 0;
 }
-//Á¬½ÓÊı¾İ¿â  
+//è¿æ¥æ•°æ®åº“  
 bool ConnectDatabase()
 {
-	//³õÊ¼»¯mysql  
-	mysql_init(&mysql);  //Á¬½Ómysql£¬Êı¾İ¿â  
+	//åˆå§‹åŒ–mysql  
+	mysql_init(&mysql);  //è¿æ¥mysqlï¼Œæ•°æ®åº“  
 	const char host[] = "localhost";
 	const char user[] = "root";
-	const char psw[] = "tzx131359";
+	const char psw[] = "password";
 	const char table[] = "students";
 	const int port = 3306;
-	//·µ»ØfalseÔòÁ¬½ÓÊ§°Ü£¬·µ»ØtrueÔòÁ¬½Ó³É¹¦  
+	//è¿”å›falseåˆ™è¿æ¥å¤±è´¥ï¼Œè¿”å›trueåˆ™è¿æ¥æˆåŠŸ  
 	if (!(mysql_real_connect(&mysql, host, user, psw, table, port, NULL, 0)))
-		//ÖĞ¼ä·Ö±ğÊÇÖ÷»ú£¬ÓÃ»§Ãû£¬ÃÜÂë£¬Êı¾İ¿âÃû£¬¶Ë¿ÚºÅ£¨¿ÉÒÔĞ´Ä¬ÈÏ0»òÕß3306µÈ£©£¬¿ÉÒÔÏÈĞ´³É²ÎÊıÔÙ´«½øÈ¥  
+		//ä¸­é—´åˆ†åˆ«æ˜¯ä¸»æœºï¼Œç”¨æˆ·åï¼Œå¯†ç ï¼Œæ•°æ®åº“åï¼Œç«¯å£å·ï¼ˆå¯ä»¥å†™é»˜è®¤0æˆ–è€…3306ç­‰ï¼‰ï¼Œå¯ä»¥å…ˆå†™æˆå‚æ•°å†ä¼ è¿›å»  
 	{
 		printf("Error connecting to database:%s\n", mysql_error(&mysql));
 		return false;
@@ -59,59 +59,59 @@ bool ConnectDatabase()
 		return true;
 	}
 }
-//ÊÍ·Å×ÊÔ´  
+//é‡Šæ”¾èµ„æº  
 void FreeConnect()
 {
-	mysql_free_result(res);  //ÊÍ·ÅÒ»¸ö½á¹û¼¯ºÏÊ¹ÓÃµÄÄÚ´æ¡£
-	mysql_close(&mysql);	 //¹Ø±ÕÒ»¸ö·şÎñÆ÷Á¬½Ó¡£
+	mysql_free_result(res);  //é‡Šæ”¾ä¸€ä¸ªç»“æœé›†åˆä½¿ç”¨çš„å†…å­˜ã€‚
+	mysql_close(&mysql);	 //å…³é—­ä¸€ä¸ªæœåŠ¡å™¨è¿æ¥ã€‚
 }
 
-/***************************Êı¾İ¿â²Ù×÷***********************************/
-//ÆäÊµËùÓĞµÄÊı¾İ¿â²Ù×÷¶¼ÊÇÏÈĞ´¸ösqlÓï¾ä£¬È»ºóÓÃmysql_query(&mysql,query)À´Íê³É£¬°üÀ¨´´½¨Êı¾İ¿â»ò±í£¬ÔöÉ¾¸Ä²é  
-//²éÑ¯Êı¾İ  
+/***************************æ•°æ®åº“æ“ä½œ***********************************/
+//å…¶å®æ‰€æœ‰çš„æ•°æ®åº“æ“ä½œéƒ½æ˜¯å…ˆå†™ä¸ªsqlè¯­å¥ï¼Œç„¶åç”¨mysql_query(&mysql,query)æ¥å®Œæˆï¼ŒåŒ…æ‹¬åˆ›å»ºæ•°æ®åº“æˆ–è¡¨ï¼Œå¢åˆ æ”¹æŸ¥  
+//æŸ¥è¯¢æ•°æ®  
 bool QueryDatabase1()
 {
-	strcpy(query, "select * from studentinfo"); //Ö´ĞĞ²éÑ¯Óï¾ä£¬ÕâÀïÊÇ²éÑ¯ËùÓĞ£¬userÊÇ±íÃû£¬²»ÓÃ¼ÓÒıºÅ£¬ÓÃstrcpyÒ²¿ÉÒÔ  
-	mysql_query(&mysql, "set names gbk"); //ÉèÖÃ±àÂë¸ñÊ½£¨SET NAMES GBKÒ²ĞĞ£©£¬·ñÔòcmdÏÂÖĞÎÄÂÒÂë  
-	//·µ»Ø0 ²éÑ¯³É¹¦£¬·µ»Ø1²éÑ¯Ê§°Ü  
-	if (mysql_query(&mysql, query)) {        // Ö´ĞĞÖ¸¶¨ÎªÒ»¸ö¿Õ½áÎ²µÄ×Ö·û´®µÄSQL²éÑ¯¡£	
+	strcpy(query, "select * from studentinfo"); //æ‰§è¡ŒæŸ¥è¯¢è¯­å¥ï¼Œè¿™é‡Œæ˜¯æŸ¥è¯¢æ‰€æœ‰ï¼Œuseræ˜¯è¡¨åï¼Œä¸ç”¨åŠ å¼•å·ï¼Œç”¨strcpyä¹Ÿå¯ä»¥  
+	mysql_query(&mysql, "set names gbk"); //è®¾ç½®ç¼–ç æ ¼å¼ï¼ˆSET NAMES GBKä¹Ÿè¡Œï¼‰ï¼Œå¦åˆ™cmdä¸‹ä¸­æ–‡ä¹±ç   
+	//è¿”å›0 æŸ¥è¯¢æˆåŠŸï¼Œè¿”å›1æŸ¥è¯¢å¤±è´¥  
+	if (mysql_query(&mysql, query)) {        // æ‰§è¡ŒæŒ‡å®šä¸ºä¸€ä¸ªç©ºç»“å°¾çš„å­—ç¬¦ä¸²çš„SQLæŸ¥è¯¢ã€‚	
 		printf("Query failed (%s)\n", mysql_error(&mysql));
 		return false;
 	}
 	else {
 		printf("query success\n");
 	}
-	//»ñÈ¡½á¹û¼¯  
-	if (!(res = mysql_store_result(&mysql)))    //»ñµÃsqlÓï¾ä½áÊøºó·µ»ØµÄ½á¹û¼¯  
+	//è·å–ç»“æœé›†  
+	if (!(res = mysql_store_result(&mysql)))    //è·å¾—sqlè¯­å¥ç»“æŸåè¿”å›çš„ç»“æœé›†  
 	{
 		printf("Couldn't get result from %s\n", mysql_error(&mysql));
 		return false;
 	}
 
-	//´òÓ¡Êı¾İĞĞÊı  
+	//æ‰“å°æ•°æ®è¡Œæ•°  
 	printf("number of dataline returned: %d\n", mysql_affected_rows(&mysql));
 
-	//»ñÈ¡×Ö¶ÎµÄĞÅÏ¢  
-	char* str_field[32];  //¶¨ÒåÒ»¸ö×Ö·û´®Êı×é´æ´¢×Ö¶ÎĞÅÏ¢
-	for (int i = 0; i < 3; i++)   //ÔÚÒÑÖª×Ö¶ÎÊıÁ¿µÄÇé¿öÏÂ»ñÈ¡×Ö¶ÎÃû 
+	//è·å–å­—æ®µçš„ä¿¡æ¯  
+	char* str_field[32];  //å®šä¹‰ä¸€ä¸ªå­—ç¬¦ä¸²æ•°ç»„å­˜å‚¨å­—æ®µä¿¡æ¯
+	for (int i = 0; i < 3; i++)   //åœ¨å·²çŸ¥å­—æ®µæ•°é‡çš„æƒ…å†µä¸‹è·å–å­—æ®µå 
 	{
-		str_field[i] = mysql_fetch_field(res)->name;	//·µ»ØÒ»¸öËùÓĞ×Ö¶Î½á¹¹µÄÊı×é¡£
+		str_field[i] = mysql_fetch_field(res)->name;	//è¿”å›ä¸€ä¸ªæ‰€æœ‰å­—æ®µç»“æ„çš„æ•°ç»„ã€‚
 	}
-	for (int i = 0; i < 3; i++)   //´òÓ¡×Ö¶Î  
+	for (int i = 0; i < 3; i++)   //æ‰“å°å­—æ®µ  
 		printf("%10s\t", str_field[i]);
 	printf("\n");
-	//´òÓ¡»ñÈ¡µÄÊı¾İ  
-	while (column = mysql_fetch_row(res))   //ÔÚÒÑÖª×Ö¶ÎÊıÁ¿Çé¿öÏÂ£¬»ñÈ¡²¢´òÓ¡ÏÂÒ»ĞĞ  
+	//æ‰“å°è·å–çš„æ•°æ®  
+	while (column = mysql_fetch_row(res))   //åœ¨å·²çŸ¥å­—æ®µæ•°é‡æƒ…å†µä¸‹ï¼Œè·å–å¹¶æ‰“å°ä¸‹ä¸€è¡Œ  
 	{
-		printf("%10s\t%10s\t%10s\n", column[0], column[1], column[2]);  //columnÊÇÁĞÊı×é  
+		printf("%10s\t%10s\t%10s\n", column[0], column[1], column[2]);  //columnæ˜¯åˆ—æ•°ç»„  
 	}
 	return true;
 }
 bool QueryDatabase2()
 {
 	mysql_query(&mysql, "set names gbk");
-	//·µ»Ø0 ²éÑ¯³É¹¦£¬·µ»Ø1²éÑ¯Ê§°Ü  
-	if (mysql_query(&mysql, "select * from studentinfo"))        //Ö´ĞĞSQLÓï¾ä  
+	//è¿”å›0 æŸ¥è¯¢æˆåŠŸï¼Œè¿”å›1æŸ¥è¯¢å¤±è´¥  
+	if (mysql_query(&mysql, "select * from studentinfo"))        //æ‰§è¡ŒSQLè¯­å¥  
 	{
 		printf("Query failed (%s)\n", mysql_error(&mysql));
 		return false;
@@ -121,12 +121,12 @@ bool QueryDatabase2()
 		printf("query success\n");
 	}
 	res = mysql_store_result(&mysql);
-	//´òÓ¡Êı¾İĞĞÊı  
+	//æ‰“å°æ•°æ®è¡Œæ•°  
 	printf("number of dataline returned: %d\n", mysql_affected_rows(&mysql));
-	for (int i = 0; fd = mysql_fetch_field(res); i++)  //»ñÈ¡×Ö¶ÎÃû  
+	for (int i = 0; fd = mysql_fetch_field(res); i++)  //è·å–å­—æ®µå  
 		strcpy(field[i], fd->name);
-	int j = mysql_num_fields(res);  // »ñÈ¡ÁĞÊı  
-	for (int i = 0; i < j; i++)  //´òÓ¡×Ö¶Î  
+	int j = mysql_num_fields(res);  // è·å–åˆ—æ•°  
+	for (int i = 0; i < j; i++)  //æ‰“å°å­—æ®µ  
 		printf("%10s\t", field[i]);
 	printf("\n");
 	while (column = mysql_fetch_row(res))
@@ -138,13 +138,13 @@ bool QueryDatabase2()
 	return true;
 }
 
-//²åÈëÊı¾İ  
+//æ’å…¥æ•°æ®  
 bool InsertData()
 {
-	//¿ÉÒÔÏë°ì·¨ÊµÏÖÊÖ¶¯ÔÚ¿ØÖÆÌ¨ÊÖ¶¯ÊäÈëÖ¸Áî  
-	strcpy(query, "insert into studentinfo values ('³ÂŞÈÑ¸',2,96);");
+	//å¯ä»¥æƒ³åŠæ³•å®ç°æ‰‹åŠ¨åœ¨æ§åˆ¶å°æ‰‹åŠ¨è¾“å…¥æŒ‡ä»¤  
+	strcpy(query, "insert into studentinfo values ('é™ˆå¥•è¿…',2,96);");
 
-	if (mysql_query(&mysql, query))        //Ö´ĞĞSQLÓï¾ä  
+	if (mysql_query(&mysql, query))        //æ‰§è¡ŒSQLè¯­å¥  
 	{
 		printf("Query failed (%s)\n", mysql_error(&mysql));
 		return false;
@@ -156,11 +156,11 @@ bool InsertData()
 	}
 }
 
-//ĞŞ¸ÄÊı¾İ  
+//ä¿®æ”¹æ•°æ®  
 bool ModifyData()
 {
-	strcpy(query, "update studentinfo set score=22 where name='²ÌĞìÀ¤'");
-	if (mysql_query(&mysql, query))        //Ö´ĞĞSQLÓï¾ä  
+	strcpy(query, "update studentinfo set score=22 where name='è”¡å¾å¤'");
+	if (mysql_query(&mysql, query))        //æ‰§è¡ŒSQLè¯­å¥  
 	{
 		printf("Query failed (%s)\n", mysql_error(&mysql));
 		return false;
@@ -171,14 +171,14 @@ bool ModifyData()
 		return true;
 	}
 }
-//É¾³ıÊı¾İ  
+//åˆ é™¤æ•°æ®  
 bool DeleteData()
 {
 	/*sprintf(query, "delete from studentinfo where id=6");*/
 	char query[100];
 	printf("please input the sql:\n");
-	gets_s(query);  //ÕâÀïÊÖ¶¯ÊäÈësqlÓï¾ä  
-	if (mysql_query(&mysql, query))        //Ö´ĞĞSQLÓï¾ä  
+	gets_s(query);  //è¿™é‡Œæ‰‹åŠ¨è¾“å…¥sqlè¯­å¥  
+	if (mysql_query(&mysql, query))        //æ‰§è¡ŒSQLè¯­å¥  
 	{
 		printf("Query failed (%s)\n", mysql_error(&mysql));
 		return false;
